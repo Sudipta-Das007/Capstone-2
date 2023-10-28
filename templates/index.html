@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Image Captioning Generator</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center my-4">Image Captioning Generator</h1>
+        <form action="/" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <input type="file" class="form-control-file" id="image" name="image" accept="image/*" required>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">Generate Caption</button>
+            </div>
+        </form>
+        <div class="text-center mt-4">
+            <img id="uploaded-image" src="" alt="Uploaded Image" class="img-fluid">
+        </div>
+        <div class="text-center mt-3">
+            <p id="caption"></p>
+        </div>
+    </div>
+    <script>
+        document.querySelector('form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(document.querySelector('form'));
+            const response = await fetch('/generate_caption', {
+                method: 'POST',
+                body: formData,
+            });
+            if (response.status === 200) {
+                const result = await response.json();
+                const uploadedImage = document.getElementById('uploaded-image');
+                const caption = document.getElementById('caption');
+                uploadedImage.src = URL.createObjectURL(formData.get('image'));
+                caption.textContent = result.caption;
+            } else {
+                alert('Caption generation failed. Please try again.');
+            }
+        });
+    </script>
+</body>
+</html>
