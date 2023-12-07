@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKERHUB_CREDENTIALS = credentials('nimit-dockerhub')
         DOCKER_IMAGE_NAME = 'nimitsinghal/capstone:Image_cap'
-        DOCKER_EXE_PATH = 'C:\Program Files\Docker\Docker\resources\bin\docker'
+        DOCKER_EXE_PATH = 'C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker'
         CURRENT_STAGE = ''
     }
 
