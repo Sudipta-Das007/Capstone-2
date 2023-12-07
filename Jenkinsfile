@@ -22,15 +22,17 @@ pipeline {
                     }
                 }
             }
+        }
 
         stage('Build') {
             steps {
                 script {
                     CURRENT_STAGE = 'Build'
                     // Build the Docker image
-                    bat "docker build -t nimitsinghal/capstone:Image_cap ."
+                    bat "docker build -t ${DOCKER_IMAGE_NAME} ."
                 }
             }
+        }
 
         stage('Login') {
             steps {
@@ -38,21 +40,23 @@ pipeline {
                     CURRENT_STAGE = 'Login'
                     // Log in to Docker Hub
                     withCredentials([usernamePassword(credentialsId: 'nimit-dockerhub', usernameVariable: 'nimitsinghal', passwordVariable: 'dckr_pat_5gfh5DM75WFd0RztxfCOQ_Z9sx4')]) {
-                        echo "Logging in to Docker Hub..."
+                        sh "${DOCKER_EXE_PATH} login -u ${nimitsinghal} -p ${dckr_pat_5gfh5DM75WFd0RztxfCOQ_Z9sx4}"
                     }
                 }
             }
+        }
 
         stage('Push') {
             steps {
                 script {
                     CURRENT_STAGE = 'Push'
                     // Push the Docker image to Docker Hub
-                    withDockerRegistry([ credentialsId: "nimit-dockerhub", url: "https://index.docker.io/v1/" ]) {
-                        bat "docker push nimitsinghal/capstone:Image_cap"
+                    withDockerRegistry([ credentialsId: 'nimit-dockerhub', url: 'https://index.docker.io/v1/' ]) {
+                        sh "docker push ${DOCKER_IMAGE_NAME}"
                     }
                 }
             }
+        }
 
         stage('Test') {
             steps {
@@ -66,7 +70,7 @@ pipeline {
                     script {
                         // Send email notification for this stage with log attachment
                         emailext (
-                            to: "nimit.singhal20@st.niituniversity.in",
+                            to: 'nimit.singhal20@st.niituniversity.in',
                             subject: "Jenkins Build ${currentBuild.result}: ${env.JOB_NAME} - #${env.BUILD_NUMBER}",
                             body: """
                             <p>Build Status: ${currentBuild.result}</p>
