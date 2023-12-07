@@ -5,7 +5,7 @@ pipeline {
     }
 
     stages {
-        stage('Git Checkout') {
+        stage('Git Connection') {
             steps {
                 git branch: 'main', url: 'https://github.com/Sudipta-Das007/Capstone-2.git'
             }
@@ -19,7 +19,7 @@ pipeline {
             }
         }
 
-        stage('Push Images to Hub') {
+        stage('Push Images to Docker-Hub') {
             steps {
                 withDockerRegistry([ credentialsId: "", url: "" ]) {
                     bat 'docker push image_cap_app'
