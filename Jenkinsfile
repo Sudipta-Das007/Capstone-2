@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKERHUB_CREDENTIALS = credentials('nimit-dockerhub')
         DOCKER_IMAGE_NAME = 'nimitsinghal/capstone:Image_cap'
-        DOCKER_EXE_PATH = 'C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker'
+        DOCKER_EXE_PATH = 'C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe'
         CURRENT_STAGE = ''
     }
 
@@ -35,28 +35,29 @@ pipeline {
         }
 
         stage('Login') {
-            steps {
-                script {
-                    CURRENT_STAGE = 'Login'
-                    // Log in to Docker Hub
-                    withCredentials([usernamePassword(credentialsId: 'nimit-dockerhub', usernameVariable: 'nimitsinghal', passwordVariable: 'dckr_pat_5gfh5DM75WFd0RztxfCOQ_Z9sx4')]) {
-                        sh "${DOCKER_EXE_PATH} login -u ${nimitsinghal} -p ${dckr_pat_5gfh5DM75WFd0RztxfCOQ_Z9sx4}"
-                    }
-                }
+    steps {
+        script {
+            CURRENT_STAGE = 'Login'
+            // Log in to Docker Hub
+            withCredentials([usernamePassword(credentialsId: 'nimit-dockerhub', usernameVariable: 'nimitsinghal', passwordVariable: 'dckr_pat_5gfh5DM75WFd0RztxfCOQ_Z9sx4')]) {
             }
         }
+    }
+}
 
-        stage('Push') {
-            steps {
-                script {
-                    CURRENT_STAGE = 'Push'
-                    // Push the Docker image to Docker Hub
-                    withDockerRegistry([ credentialsId: 'nimit-dockerhub', url: 'https://index.docker.io/v1/' ]) {
-                        sh "docker push ${DOCKER_IMAGE_NAME}"
-                    }
-                }
+stage('Push') {
+    steps {
+        script {
+            CURRENT_STAGE = 'Push'
+            // Push the Docker image to Docker Hub
+            withDockerRegistry([ credentialsId: 'nimit-dockerhub', url: 'https://index.docker.io/v1/' ]) {
+                bat "docker push nimitsinghal/capstone:Image_cap"
+                
             }
         }
+    }
+}
+
 
         stage('Test') {
             steps {
@@ -70,7 +71,7 @@ pipeline {
                     script {
                         // Send email notification for this stage with log attachment
                         emailext (
-                            to: 'nimit.singhal20@st.niituniversity.in',
+                            to: 'nimit.singhal20@st.niituniversity.in, nimit.singhal02@gmail.com',
                             subject: "Jenkins Build ${currentBuild.result}: ${env.JOB_NAME} - #${env.BUILD_NUMBER}",
                             body: """
                             <p>Build Status: ${currentBuild.result}</p>
