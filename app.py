@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 
 import collections
 import json
@@ -18,7 +19,7 @@ except ImportError:
 
 # Command Line Options
 define("port", default=8088, help="Port the web app will run on")
-define("ml-endpoint", default=os.getenv("ML_ENDPOINT", "http://localhost:5000"),
+define("ml-endpoint", default=os.getenv("ML_ENDPOINT", "http://172.17.0.2:5000"),
        help="The Image Caption Generator REST endpoint")
 
 

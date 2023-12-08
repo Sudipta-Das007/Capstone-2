@@ -1,3 +1,4 @@
+# Manifest
 applications:
 - disk_quota: 256M
   instances: 1
